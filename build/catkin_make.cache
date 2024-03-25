@@ -1,0 +1,2 @@
+arm_ctrl:motor_ctrl:vision
+-DCATKIN_DEVEL_PREFIX=/home/aurora/aurora_ws/devel -DCMAKE_INSTALL_PREFIX=/home/aurora/aurora_ws/install -G Unix Makefiles

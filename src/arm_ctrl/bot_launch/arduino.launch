@@ -1,0 +1,9 @@
+<launch>
+   <node pkg="rosserial_arduino" type="serial_node.py" name="serial_interface">
+   	<param name="port" value="/dev/ttyTHS3"/>
+   	<param name="~baud" value="9600"/>
+   </node>
+   
+</launch>
+
+

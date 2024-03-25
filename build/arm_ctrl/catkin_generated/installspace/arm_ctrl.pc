@@ -1,0 +1,8 @@
+prefix=/home/aurora/aurora_ws/install
+
+Name: arm_ctrl
+Description: Description of arm_ctrl
+Version: 0.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib 
+Requires: roscpp rospy std_msgs message_runtime

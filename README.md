@@ -1,2 +1,4 @@
-# aurora_ws
-This repository contains basic code for motor control and arm control of rover in openloop
+# IRoC-U 2024
+ISRO Robotics Challenge 2024
+
+- Let's get Started Yo !

@@ -13,15 +13,22 @@ IMIN = 0
 IMAX = 50
 
 def update_line(num, iterator, line):
+    leftDegLim = 60
+    rightDegLim = 300
     f = open('LiDAR-LogFile-{}.txt'.format(str(timeStamp)), 'a')
-    scan = next(iterator)
-    logStuff = 'UnixEpoch-Time: ' + str(time.time()) + '\n' + str(scan) + '\n\n'
+    outLiDAR = next(iterator)
+    logStuff = 'UnixEpoch-Time: ' + str(time.time()) + '\n' + str(outLiDAR) + '\n\n'
     f.write(logStuff)
     f.close()
-    offsets = np.array([(np.radians(meas[1]), meas[2]) for meas in scan])
+    outLiDAR = np.array(outLiDAR, dtype=[('quality', 'i4'), ('angle', 'f4'), ('distance', 'f4')])
+    targetMask = ((outLiDAR['angle'] >= 0) & (outLiDAR['angle'] <= leftDegLim)) | ((outLiDAR['angle'] >= rightDegLim) & (outLiDAR['angle'] <= 360))
+    targetRegion = outLiDAR[targetMask]
+    print(targetRegion)
+    offsets = np.array([(np.radians(meas[1]), meas[2]) for meas in outLiDAR])
     line.set_offsets(offsets)
-    intens = np.array([meas[0] for meas in scan])
+    intens = np.array([meas[0] for meas in outLiDAR])
     line.set_array(intens)
+    time.sleep(5)
     return line
 
 def run():

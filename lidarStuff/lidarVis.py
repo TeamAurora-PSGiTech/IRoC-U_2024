@@ -8,13 +8,14 @@ import time
 # Linux   : "/dev/ttyUSB0"
 # MacOS   : "/dev/tty.usbserial-0001"
 PORT_NAME = '/dev/tty.usbserial-0001'
-DMAX = 800
+DMAX = 2000
 IMIN = 0
 IMAX = 50
 
 def update_line(num, iterator, line):
     leftDegLim = 60
     rightDegLim = 300
+    obstacleRange = 500
     f = open('LiDAR-LogFile-{}.txt'.format(str(timeStamp)), 'a')
     outLiDAR = next(iterator)
     logStuff = 'UnixEpoch-Time: ' + str(time.time()) + '\n' + str(outLiDAR) + '\n\n'
@@ -24,11 +25,16 @@ def update_line(num, iterator, line):
     targetMask = ((outLiDAR['angle'] >= 0) & (outLiDAR['angle'] <= leftDegLim)) | ((outLiDAR['angle'] >= rightDegLim) & (outLiDAR['angle'] <= 360))
     targetRegion = outLiDAR[targetMask]
     print(targetRegion)
-    offsets = np.array([(np.radians(meas[1]), meas[2]) for meas in outLiDAR])
+    leftMask = ((targetRegion['angle'] >= 0) & (targetRegion['angle'] <= leftDegLim)) & (targetRegion['distance'] <= obstacleRange)
+    rightMask = ((targetRegion['angle'] >= rightDegLim) & (targetRegion['angle'] <= 360)) & (targetRegion['distance'] <= obstacleRange)
+    if len(targetRegion[leftMask]) < len(targetRegion[rightMask]):
+        print("Turn Right Yo !" * 10)
+    else:
+        print("Turn Left Yo !" * 10)
+    offsets = np.array([(np.radians(meas[1]), meas[2]) for meas in targetRegion])
     line.set_offsets(offsets)
-    intens = np.array([meas[0] for meas in outLiDAR])
+    intens = np.array([meas[0] for meas in targetRegion])
     line.set_array(intens)
-    time.sleep(5)
     return line
 
 def run():

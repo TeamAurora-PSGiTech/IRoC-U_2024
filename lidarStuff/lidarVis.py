@@ -15,6 +15,7 @@ IMAX = 50
 def update_line(num, iterator, line):
     leftDegLim = 60
     rightDegLim = 300
+    groundRange = 1150
     obstacleRange = 500
     f = open('LiDAR-LogFile-{}.txt'.format(str(timeStamp)), 'a')
     outLiDAR = next(iterator)
@@ -25,8 +26,8 @@ def update_line(num, iterator, line):
     targetMask = ((outLiDAR['angle'] >= 0) & (outLiDAR['angle'] <= leftDegLim)) | ((outLiDAR['angle'] >= rightDegLim) & (outLiDAR['angle'] <= 360))
     targetRegion = outLiDAR[targetMask]
     print(targetRegion)
-    leftMask = ((targetRegion['angle'] >= 0) & (targetRegion['angle'] <= leftDegLim)) & (targetRegion['distance'] <= obstacleRange)
-    rightMask = ((targetRegion['angle'] >= rightDegLim) & (targetRegion['angle'] <= 360)) & (targetRegion['distance'] <= obstacleRange)
+    leftMask = (((targetRegion['angle'] >= 0) & (targetRegion['angle'] <= leftDegLim)) & (targetRegion['distance'] <= obstacleRange)) | (targetRegion['distance'] > groundRange)
+    rightMask = (((targetRegion['angle'] >= rightDegLim) & (targetRegion['angle'] <= 360)) & (targetRegion['distance'] <= obstacleRange)) | (targetRegion['distance'] > groundRange)
     if len(targetRegion[leftMask]) < len(targetRegion[rightMask]):
         print("Turn Right Yo !" * 10)
     else:
